@@ -102,11 +102,10 @@ public class JSSDB implements SSDBCommand, BaseCommand, Closeable {
     }
 
     @Override
-    public Set<Tuple> hgetAll(String name) {
+    public Map<String, String> hgetAll(String name) {
         connection.sendCommand(Protocol.Command.HGETALL, name);
-        return connection.getResponse().getTupleContent();
+        return connection.getResponse().getMapContent();
     }
-
 
     @Override
     public Response zset(String name, String key, long score) {

@@ -36,7 +36,7 @@ public interface SSDBCommand {
 
     String hget(String name, String key);
 
-    Set<Tuple> hgetAll(String name);
+    Map<String,String> hgetAll(String name);
 
     //################sortedSet#################
     Response zset(String name,String key, long score);

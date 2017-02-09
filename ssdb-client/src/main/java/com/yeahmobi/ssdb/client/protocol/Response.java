@@ -1,13 +1,11 @@
 package com.yeahmobi.ssdb.client.protocol;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.yeahmobi.ssdb.client.Tuple;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author penuel (penuel.leo@gmail.com)
@@ -104,6 +102,20 @@ public class Response {
                 }
             }
             return set;
+        }
+        return null;
+    }
+
+    public Map<String, String> getMapContent() {
+        if ( Status.OK.equals(status) ) {
+            Map<String, String> map = Maps.newHashMap();
+            if ( hasContent() ) {
+                Iterator<byte[]> it = content.iterator();
+                while ( it.hasNext() ) {
+                    map.put(new String(it.next()), new String(it.next()));
+                }
+            }
+            return map;
         }
         return null;
     }
