@@ -105,7 +105,7 @@ public class JSSDBPoolTest {
     @Test
     public void hgetAll(){
         try(JSSDB ssdb = pool.getResource()){
-            Set<Tuple> result = ssdb.hgetAll("name111");
+            Map<String,String> result = ssdb.hgetAll("name111");
             System.out.println(JSONObject.toJSONString(result));
         }
     }
