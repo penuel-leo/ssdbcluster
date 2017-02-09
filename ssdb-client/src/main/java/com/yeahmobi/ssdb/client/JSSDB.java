@@ -7,9 +7,12 @@ import com.yeahmobi.ssdb.client.exception.JSSDBException;
 import com.yeahmobi.ssdb.client.protocol.Protocol;
 import com.yeahmobi.ssdb.client.protocol.Response;
 import com.yeahmobi.ssdb.client.util.Pool;
+import com.yeahmobi.ssdb.client.util.TransferUtil;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -87,6 +90,25 @@ public class JSSDB implements SSDBCommand, BaseCommand, Closeable {
     }
 
     @Override
+    public Long multi_hset(String name, Map<String, String> keyValues) {
+        connection.sendCommand(Protocol.Command.MULTI_HSET, TransferUtil.map2Array(name, keyValues));
+        return connection.getResponse().getLongContent();
+    }
+
+    @Override
+    public String hget(String name, String key) {
+        connection.sendCommand(Protocol.Command.HGET, name, key);
+        return connection.getResponse().getStringContent();
+    }
+
+    @Override
+    public Set<Tuple> hgetAll(String name) {
+        connection.sendCommand(Protocol.Command.HGETALL, name);
+        return connection.getResponse().getTupleContent();
+    }
+
+
+    @Override
     public Response zset(String name, String key, long score) {
         connection.sendCommand(Protocol.Command.ZSET, name, key, String.valueOf(score));
         return connection.getResponse();
@@ -107,6 +129,19 @@ public class JSSDB implements SSDBCommand, BaseCommand, Closeable {
     @Override
     public Set<Tuple> zrange(String name, int offset, int limit) {
         connection.sendCommand(Protocol.Command.ZRANGE, name, String.valueOf(offset), String.valueOf(limit));
+        return connection.getResponse().getTupleContent();
+    }
+
+    @Override
+    public List<String> zlist(String nameStart, String nameEnd, int limit) {
+        connection.sendCommand(Protocol.Command.ZLIST, null == nameStart ? "" : nameStart, null == nameEnd ? "" : nameEnd, String.valueOf(limit));
+        return connection.getResponse().getListContent();
+    }
+
+    @Override
+    public Set<Tuple> zscan(String name, String keyStart, Long scoreStart, Long scoreEnd, int limit) {
+        connection.sendCommand(Protocol.Command.ZSCAN, name, null == keyStart ? "" : keyStart, null == scoreStart ? "" : String.valueOf(scoreStart),
+                               null == scoreEnd ? "" : String.valueOf(scoreEnd), String.valueOf(limit));
         return connection.getResponse().getTupleContent();
     }
 

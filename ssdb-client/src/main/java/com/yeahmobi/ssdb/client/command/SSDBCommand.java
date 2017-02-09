@@ -4,6 +4,8 @@ import com.yeahmobi.ssdb.client.Tuple;
 import com.yeahmobi.ssdb.client.protocol.Response;
 import com.yeahmobi.ssdb.client.protocol.Response.Status;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,6 +32,12 @@ public interface SSDBCommand {
     //#################hashmap#################
     Integer hset(String name, String key, String value);
 
+    Long multi_hset(String name, Map<String,String> keyValues);
+
+    String hget(String name, String key);
+
+    Set<Tuple> hgetAll(String name);
+
     //################sortedSet#################
     Response zset(String name,String key, long score);
 
@@ -38,5 +46,18 @@ public interface SSDBCommand {
     Long zincr(String name,String key, long score);
 
     Set<Tuple> zrange(String name, int offset, int limit);
+
+    List<String> zlist(String nameStart,String nameEnd,int limit);
+
+    /**
+     *
+     * @param name
+     * @param keyStart
+     * @param scoreStart null=无限小
+     * @param scoreEnd null=无限大
+     * @param limit -1=全部
+     * @return
+     */
+    Set<Tuple> zscan(String name, String keyStart, Long scoreStart,Long scoreEnd,int limit);
 
 }

@@ -22,8 +22,8 @@ public final class Protocol {
 
     public static enum Command {
         SET, SETX, SETNX, EXPIRE, TTL, GET,//String
-        HSET,//hashmap
-        ZSET, ZINCR, ZGET, ZRANGE,//sortedset
+        HSET, HGET,MULTI_HSET,HGETALL,//hashmap
+        ZSET, ZINCR, ZGET, ZRANGE,ZLIST,ZSCAN,//sortedset
         AUTH;//server
 
         public final byte[] raw;

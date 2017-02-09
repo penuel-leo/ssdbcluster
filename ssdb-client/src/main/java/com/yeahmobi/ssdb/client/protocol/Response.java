@@ -1,5 +1,6 @@
 package com.yeahmobi.ssdb.client.protocol;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.yeahmobi.ssdb.client.Tuple;
 
@@ -28,7 +29,7 @@ public class Response {
             if ( bytes.size() > 0 ) {
                 this.status = Status.getByCode(new String(bytes.get(0)));
             }
-            if ( Status.CLIENT_ERROR.equals(status) && bytes.size() == 2 ){
+            if ( Status.CLIENT_ERROR.equals(status) && bytes.size() == 2 ) {
                 this.errorInfo = new String(bytes.get(1));
                 //TODO warn logit
             }
@@ -80,6 +81,19 @@ public class Response {
         return null;
     }
 
+    public List<String> getListContent() {
+        if ( Status.OK.equals(status) ) {
+            List<String> list = Lists.newArrayList();
+            if ( content != null && content.size() > 0 ) {
+                for ( byte[] bs : content ) {
+                    list.add(new String(bs));
+                }
+            }
+            return list;
+        }
+        return null;
+    }
+
     public Set<Tuple> getTupleContent() {
         if ( Status.OK.equals(status) ) {
             LinkedHashSet<Tuple> set = Sets.newLinkedHashSet();
@@ -100,7 +114,7 @@ public class Response {
 
     public enum Status {
 
-        OK("ok"), NOT_FOUND("not_found"),CLIENT_ERROR("client_error"), UNKNOWN("unknown");
+        OK("ok"), NOT_FOUND("not_found"), CLIENT_ERROR("client_error"), UNKNOWN("unknown");
 
         private String code;
 
