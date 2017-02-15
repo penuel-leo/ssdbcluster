@@ -39,4 +39,4 @@
     }
   ```
   
-  you can package JSSDBPool use Singleton such as:*ssdb-client/test/java...JSSDBClientDemo*:
+  or you can package JSSDBPool use Singleton such as:*ssdb-client/test/java...JSSDBClientDemo*:
