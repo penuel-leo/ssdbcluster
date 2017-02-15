@@ -14,27 +14,22 @@ import java.util.*;
  */
 public class Response {
 
-    private Status status = Status.UNKNOWN;
+    private Status status = Status.NO_RESPONSE;
 
     private List<byte[]> content;
 
-    private String errorInfo;
-
     public Response(List<byte[]> bytes) {
         if ( null == bytes || bytes.size() == 0 ) {
-            this.status = Status.UNKNOWN;
+            this.status = Status.NO_RESPONSE;
         } else {
             if ( bytes.size() > 0 ) {
                 this.status = Status.getByCode(new String(bytes.get(0)));
-            }
-            if ( Status.CLIENT_ERROR.equals(status) && bytes.size() == 2 ) {
-                this.errorInfo = new String(bytes.get(1));
-                //TODO warn logit
             }
             if ( bytes.size() > 1 ) {
                 this.content = bytes.subList(1, bytes.size());
             }
         }
+        this.status.setMessage(getErrorInfo());
     }
 
     public Status getStatus() {
@@ -45,22 +40,9 @@ public class Response {
         return content;
     }
 
-    public String getErrorInfo() {
-        return errorInfo;
-    }
-
     public String getStringContent() {
-        if ( Status.OK.equals(status) && hasContent() ) {
-            if ( content.size() == 1 ) {
-                return new String(content.get(0));
-            } else {
-                StringBuilder sb = new StringBuilder();
-                for ( int i = 0; i < content.size() - 1; i++ ) {
-                    sb.append(content.get(i)).append('\n');
-                }
-                sb.append(content.get(content.size() - 1));
-                return sb.toString();
-            }
+        if ( Status.OK.equals(status) ) {
+            return getContentString();
         }
         return null;
     }
@@ -88,6 +70,19 @@ public class Response {
                 }
             }
             return list;
+        }
+        return null;
+    }
+
+    public Set<String> getSetContent() {
+        if ( Status.OK.equals(status) ) {
+            Set<String> set = new LinkedHashSet<>();
+            if ( content != null && content.size() > 0 ) {
+                for ( byte[] bs : content ) {
+                    set.add(new String(bs));
+                }
+            }
+            return set;
         }
         return null;
     }
@@ -124,27 +119,32 @@ public class Response {
         return null != content && content.size() > 0;
     }
 
-    public enum Status {
-
-        OK("ok"), NOT_FOUND("not_found"), CLIENT_ERROR("client_error"), UNKNOWN("unknown");
-
-        private String code;
-
-        Status(String code) {
-            this.code = code;
-        }
-
-        static Status getByCode(String code) {
-            switch ( code ) {
-            case "ok":
-                return OK;
-            case "not_found":
-                return NOT_FOUND;
-            case "client_error":
-                return CLIENT_ERROR;
-            default:
-                return UNKNOWN;
+    /**
+     * 将content解析为字符串
+     *
+     * @return
+     */
+    private String getContentString() {
+        if ( hasContent() ) {
+            if ( content.size() == 1 ) {
+                return new String(content.get(0));
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for ( int i = 0; i < content.size() - 1; i++ ) {
+                    sb.append(new String(content.get(i))).append('\n');
+                }
+                sb.append(new String(content.get(content.size() - 1)));
+                return sb.toString();
             }
         }
+        return null;
     }
+
+    private String getErrorInfo() {
+        if ( !Status.OK.equals(status) ) {
+            return getContentString();
+        }
+        return null;
+    }
+
 }

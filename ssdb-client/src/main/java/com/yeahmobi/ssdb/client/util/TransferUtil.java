@@ -23,7 +23,7 @@ public class TransferUtil {
     }
 
     public static String[] map2Array(String insertFirstValue, Map<String, String> keyValues) {
-        if ( null == insertFirstValue ){
+        if ( null == insertFirstValue ) {
             return map2Array(keyValues);
         }
 
@@ -36,6 +36,20 @@ public class TransferUtil {
         for ( Map.Entry<String, String> entry : keyValues.entrySet() ) {
             keyValueArray[index++] = entry.getKey();
             keyValueArray[index++] = entry.getValue();
+        }
+        return keyValueArray;
+    }
+
+    public static String[] compose2Array(String insertFirstValue, String... array) {
+        if ( null == insertFirstValue ) {
+            return array;
+        }
+
+        String[] keyValueArray = new String[array.length + 1];
+        keyValueArray[0] = insertFirstValue;
+        int index = 1;
+        for ( String a : array ) {
+            keyValueArray[index++] = a;
         }
         return keyValueArray;
     }

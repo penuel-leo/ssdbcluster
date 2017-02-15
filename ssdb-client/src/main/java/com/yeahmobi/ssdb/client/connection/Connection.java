@@ -2,17 +2,18 @@ package com.yeahmobi.ssdb.client.connection;
 
 import com.google.common.collect.Lists;
 import com.yeahmobi.ssdb.client.exception.JSSDBConnectionException;
-import com.yeahmobi.ssdb.client.exception.JSSDBException;
 import com.yeahmobi.ssdb.client.protocol.MemoryStream;
 import com.yeahmobi.ssdb.client.protocol.Protocol;
 import com.yeahmobi.ssdb.client.protocol.Protocol.Command;
 import com.yeahmobi.ssdb.client.protocol.Response;
 import com.yeahmobi.ssdb.client.protocol.SafeEncoder;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,8 +69,10 @@ public class Connection implements Closeable {
 
     public Connection sendCommand(final Command cmd, final String... args) {
         List<byte[]> list = Lists.newArrayList();
-        for ( String arg : args) {
-            list.add(SafeEncoder.encode(arg));
+        for ( String arg : args ) {
+            if ( null != arg ) {
+                list.add(SafeEncoder.encode(arg));
+            }
         }
         return sendCommand(cmd, list);
     }
@@ -86,7 +89,7 @@ public class Connection implements Closeable {
 
             Iterator<byte[]> it = args.iterator();
             byte[] bs;
-            while ( it.hasNext() ){
+            while ( it.hasNext() ) {
                 bs = it.next();
                 len = bs.length;
                 buffer.write(String.valueOf(len));

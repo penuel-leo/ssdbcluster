@@ -1,6 +1,6 @@
 package com.yeahmobi.ssdb.client.command;
 
-import com.yeahmobi.ssdb.client.protocol.Response;
+import com.yeahmobi.ssdb.client.protocol.Status;
 
 /**
  * @author penuel (penuel.leo@gmail.com)
@@ -10,6 +10,13 @@ import com.yeahmobi.ssdb.client.protocol.Response;
 public interface BaseCommand {
 
     //################server##################
-    Response.Status auth(String password);
+    Status auth(String password);
+
+    Long dbsize();
+
+    //此命令客户端不支持,并且可能破坏主从关系,请谨慎在server command执行
+    //void flushdb();
+
+    String info();
 
 }
