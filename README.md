@@ -21,6 +21,7 @@
 1. cd ssdbcluster directory
 2. mvn clean install (-Dmaven.test.skip=true)
 3. add pom dependency:
+
   ```xml
     <dependency>
         <groupId>com.yeahmobi.ssdbcluster</groupId>
@@ -28,11 +29,14 @@
         <version>1.0-SNAPSHOT</version>
     </dependency>
   ```
+  
 4. you can use JSSDBPool directly such as *ssdb-client/test/java...JSSDBPoolTest*:
+
   ```java
     JSSDBPool pool = new JSSDBPool("172.0.0.1", 9801);
     try(JSSDB ssdb = pool.getResource()){
       ssdb.set(k,v);
     }
   ```
+  
   you can package JSSDBPool use Singleton such as:*ssdb-client/test/java...JSSDBClientDemo*:
